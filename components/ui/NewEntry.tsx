@@ -1,9 +1,12 @@
 import { Box, Button, TextField } from "@mui/material"
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
+import { EntriesContext } from "@/context/entries";
 
 export const NewEntry = () => {
+
+  const { addNewEntry } = useContext(EntriesContext);
 
   const [isAdding, setIsAdding] = useState(false);
 
@@ -16,7 +19,10 @@ export const NewEntry = () => {
 
   const onSave = () => {
     if (inputValue.length === 0) return;
-    console.log(inputValue);
+    addNewEntry(inputValue);
+    setIsAdding(false);
+    setTouched(false);
+    setInputValue('');
   }
 
   return (
@@ -32,11 +38,11 @@ export const NewEntry = () => {
                 autoFocus
                 multiline
                 label='Nueva entrada'
-                helperText= { inputValue.length <= 0 && touched && 'Ingrese un valor' }
-                error= { inputValue.length <= 0 && touched }
+                helperText={inputValue.length <= 0 && touched && 'Ingrese un valor'}
+                error={inputValue.length <= 0 && touched}
                 value={inputValue}
                 onChange={onTextFieldChanged}
-                onBlur= {() => setTouched(true)}
+                onBlur={() => setTouched(true)}
               />
               <Box display='flex' justifyContent='space-between'>
                 <Button
