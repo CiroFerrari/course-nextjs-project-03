@@ -3,10 +3,29 @@ import { capitalize, Button, Card, CardActions, CardContent, CardHeader, FormCon
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { EntryStatus } from "@/interfaces";
+import { ChangeEvent, useState } from "react";
+import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
 const validStatus: EntryStatus[] = ['pending', 'in-progress', 'finished'];
 
 export const EntryPage = () => {
+
+  const [inputValue, setInputValue] = useState('');
+  const [status, setStatus] = useState<EntryStatus>('pending');
+  const [touched, setTouched] = useState(false);
+
+  const onInputValueChange = ( event: ChangeEvent<HTMLInputElement> ) => {
+    setInputValue( event.target.value );
+  }
+
+  const onStatusChange = ( event: ChangeEvent<HTMLInputElement> ) => {
+    setStatus( event.target.value as EntryStatus );
+  }
+
+  const onSave = () => {
+    console.log({ inputValue, status });
+  }
+
   return (
     <Layout title="...">
       <Grid
@@ -17,7 +36,7 @@ export const EntryPage = () => {
         <Grid item xs={12} sm={8} md={6}>
           <Card>
             <CardHeader
-              title="Entrada:"
+              title={`Entrada: ${inputValue}`}
               subheader={`Creada hacer: ... minutos`}
             />
             <CardContent>
@@ -28,11 +47,15 @@ export const EntryPage = () => {
                 autoFocus
                 multiline
                 label="Nueva entrada"
+                value={ inputValue }
+                onChange={ onInputValueChange }
               />
               <FormControl>
                 <FormLabel>Estado:</FormLabel>
                 <RadioGroup
                   row
+                  value={ status }
+                  onChange={ onStatusChange }
                 >
                   {
                     validStatus.map(option => (
@@ -50,6 +73,8 @@ export const EntryPage = () => {
                 <Button
                   startIcon={<SaveOutlinedIcon />}
                   variant="contained"
+                  fullWidth
+                  onClick={ onSave }
                 >
                   Save
                 </Button>
