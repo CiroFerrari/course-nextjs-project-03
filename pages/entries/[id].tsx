@@ -3,7 +3,7 @@ import { capitalize, Button, Card, CardActions, CardContent, CardHeader, FormCon
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { EntryStatus } from "@/interfaces";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
 const validStatus: EntryStatus[] = ['pending', 'in-progress', 'finished'];
@@ -13,6 +13,8 @@ export const EntryPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [status, setStatus] = useState<EntryStatus>('pending');
   const [touched, setTouched] = useState(false);
+
+  const isNotValid = useMemo(() => inputValue.length <= 0 && touched, [inputValue, touched]);
 
   const onInputValueChange = ( event: ChangeEvent<HTMLInputElement> ) => {
     setInputValue( event.target.value );
@@ -48,7 +50,10 @@ export const EntryPage = () => {
                 multiline
                 label="Nueva entrada"
                 value={ inputValue }
+                onBlur={ () => setTouched(true) }
                 onChange={ onInputValueChange }
+                helperText={ isNotValid && 'Ingrese un valor' }
+                error={ isNotValid }
               />
               <FormControl>
                 <FormLabel>Estado:</FormLabel>
@@ -75,6 +80,7 @@ export const EntryPage = () => {
                   variant="contained"
                   fullWidth
                   onClick={ onSave }
+                  disabled={ inputValue.length <= 0 }
                 >
                   Save
                 </Button>
