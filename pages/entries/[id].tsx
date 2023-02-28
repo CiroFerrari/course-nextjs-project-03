@@ -1,14 +1,22 @@
+import { ChangeEvent, FC, useMemo, useState } from "react";
+import { GetServerSideProps } from "next";
+import { isValidObjectId } from "mongoose";
 import { Layout } from "@/components/layouts";
 import { capitalize, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, IconButton } from "@mui/material";
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { EntryStatus } from "@/interfaces";
-import { ChangeEvent, useMemo, useState } from "react";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
 const validStatus: EntryStatus[] = ['pending', 'in-progress', 'finished'];
 
-export const EntryPage = () => {
+interface Props {
+
+};
+
+export const EntryPage:FC = ( props ) => {
+
+  console.log({ props });
 
   const [inputValue, setInputValue] = useState('');
   const [status, setStatus] = useState<EntryStatus>('pending');
@@ -99,6 +107,26 @@ export const EntryPage = () => {
       </IconButton>
     </Layout>
   );
-}
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+
+  const { id } = params as { id: string };
+
+  if ( !(isValidObjectId(id)) ) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
+    };
+  };
+
+  return {
+    props: {
+      id
+    }
+  };
+};
 
 export default EntryPage;
